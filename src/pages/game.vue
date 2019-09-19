@@ -1,59 +1,136 @@
 <template>
-    <div class="poker-game">
-        <canvas id="pokerCanvas" width="375" height="812"></canvas>
-    </div>
+  <div class="poker-game">
+    <card
+      class="cards"
+      v-for="(card,index) in cards"
+      :key="index"
+      :data-index="index"
+      :card="card"
+    />
+  </div>
 </template>
 
 <script>
+import Card from "@/components/card";
+
 export default {
-    name:'game',
-    data(){
-        return {
-            pokerCanvas:'',
-            pokerSize:{
-                //纸牌尺寸
-                w:40,//宽
-                h:80//高
-            },
-            sider:10,//卡牌间距
-        }
+  name: "game",
+  data() {
+    return {
+      cards: []
+    };
+  },
+  components: {
+    Card
+  },
+  mounted() {
+    this.initPoker();
+  },
+  methods: {
+    randArr: function(arr) {
+        //打乱顺序
+      for (var i = 0; i < arr.length; i++) {
+        var iRand = parseInt(arr.length * Math.random());
+        var temp = arr[i];
+        arr[i] = arr[iRand];
+        arr[iRand] = temp;
+      }
+      return arr;
     },
-    mounted(){
-        this.initPoker();
-        this.createCard(1,1,'黑桃',1);
-        this.createCard(1,2,'黑桃',2);
-        this.createCard(2,1,'红心',3);
-        this.createCard(1,3,'黑桃',4);
-        this.createCard(1,4,'黑桃',5);
-        this.createCard(1,5,'黑桃',6);
-        this.createCard(1,6,'黑桃',7);
-        this.createCard(1,7,'黑桃','K');
-        this.createCard(3,1,'黑桃','J');
-        this.createCard(3,7,'黑桃','10');
-    },methods:{
-        initPoker(){
-            this.pokerCanvas=document.getElementById("pokerCanvas");
-        },
-        createCard(y,x,type,num){
-            var newCard=this.pokerCanvas.getContext("2d");
-            newCard.fillStyle="#FFFFFF";
-            newCard.fillRect((x-1)*this.pokerSize.w+this.sider*x,(y-1)*this.pokerSize.h+this.sider*y,this.pokerSize.w,this.pokerSize.h);
-            newCard.fillStyle="#000000";
-            newCard.font="14px Arial";
-            newCard.fillText(type,(x-1)*this.pokerSize.w+this.sider*x+6,(y-1)*this.pokerSize.h+y*this.sider+45);
-            newCard.fillText(num,(x-1)*this.pokerSize.w+this.sider*x+2,(y-1)*this.pokerSize.h+y*this.sider+20);
-            newCard.fillText(num,(x-1)*this.pokerSize.w+this.sider*x+22,(y-1)*this.pokerSize.h+y*this.sider+70);
+    initPosition: function(cards) {
+      let card_index = 0;
+      for (let i = 1; i <= 7; i++) {
+        for (let j = 0; j < i; j++) {
+          cards[card_index].position = {
+            col: i,
+            rol: j + 1
+          };
+          cards[card_index].cover = false;
+          card_index++;
         }
+      }
+      return cards;
+    },
+    openPoker: function() {
+      //开始摆扑克
+    },
+    initPoker: function() {
+      //生成扑克牌
+      let newCards = [];
+      for (let c = 0; c < 4; c++) {
+        for (let i = 1; i <= 13; i++) {
+          let obj = {
+            num: this.pokerNumber(i),
+            color: this.pokerColor(c),
+            cover: true
+          };
+          newCards.push(obj);
+        }
+      }
+      //打乱
+      newCards = this.randArr(newCards);
+      //生成位置坐标
+      this.cards = this.initPosition(newCards);
+      this.openPoker();
+    },
+    pokerNumber: function(i) {
+      //生成扑克面值
+      if (i > 10) {
+        switch (i) {
+          case 11:
+            return "J";
+            break;
+          case 12:
+            return "Q";
+            break;
+          case 13:
+            return "K";
+            break;
+          default:
+            return "";
+        }
+      } else {
+        return String(i);
+      }
+    },
+    pokerColor: function(c) {
+      //生成扑克花色
+      let type = "";
+      switch (c) {
+        case 0:
+          type = "黑桃";
+          break;
+        case 1:
+          type = "红桃";
+          break;
+        case 2:
+          type = "梅花";
+          break;
+        case 3:
+          type = "方块";
+          break;
+        default:
+          type = "";
+      }
+      return type;
     }
-}
+  }
+};
 </script>
 
-<style scoped>
-.poker-game{
-    overflow: hidden;
-}
-#pokerCanvas{
-    float: left;
-    background:#ececec;
+<style lang="less" scoped>
+.poker-game {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  background: #ececec;
+  .cards {
+    position: fixed;
+    left: 0;
+    top: 0;
+  }
 }
 </style>
