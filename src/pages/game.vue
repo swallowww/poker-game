@@ -38,6 +38,25 @@ export default {
     this.initPoker();
   },
   methods: {
+    removeReverse: function(card,position) {
+      this.look.pop();
+      let newArr=this.reversePokersId.concat();
+      let len = newArr.length;
+      for (let i = 0; i < len; i++) {
+        if (newArr[i] == card.unique) {
+          newArr.splice(i, 1);
+        }
+      }
+      this.reversePokersId=newArr;
+      for (let i = 0; i < this.cards.length; i++) {
+        if (this.cards[i].unique == card.unique) {
+          this.cards[i].position = {
+            col: position.col+1,
+            rol: position.rol
+          };
+        }
+      }
+    },
     coverAgain: function() {
       //重新翻牌
       for (let i = 0; i < this.reversePokersId.length; i++) {
