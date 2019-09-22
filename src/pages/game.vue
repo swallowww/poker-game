@@ -178,7 +178,7 @@ export default {
 .poker-game {
   overflow: hidden;
   position: fixed;
-  width: 100%;
+  width: 10rem;
   height: 100%;
   left: 0;
   top: 0;

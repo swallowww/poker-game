@@ -32,7 +32,8 @@ export default {
       cardWidth: 1.36, //扑克宽(单位rem)
       cardHeight: 2.05, //扑克高(单位rem)
       oldPosition: "",
-      onDrag: false //是否在拖拽纸牌中
+      onDrag: false, //是否在拖拽纸牌中
+      clientWidth:document.querySelectorAll('.poker-game')[0].offsetWidth,
     };
   },
   mounted: function() {
@@ -133,11 +134,6 @@ export default {
               '[data-unique="' + resPokers[i].unique + '"]'
             )[0].style.left
           );
-          let nearestLeft = parseFloat(
-            document.querySelectorAll(
-              '[data-unique="' + nearestCard.unique + '"]'
-            )[0].style.left
-          );
           if (
             elementLeft > checkLeft - this.cardWidth / 2 &&
             elementLeft <= checkLeft + this.cardWidth / 2
@@ -203,11 +199,11 @@ export default {
           pageY = e.pageY;
         }
         this.left =
-          (pageX * 10) / document.body.clientWidth -
+          (pageX * 10) / this.clientWidth -
           this.oldPosition.offsetX +
           "rem";
         this.top =
-          (pageY * 10) / document.body.clientWidth -
+          (pageY * 10) / this.clientWidth -
           this.oldPosition.offsetY +
           "rem";
       }
@@ -229,8 +225,8 @@ export default {
         this.oldPosition = {
           left: element.style.left,
           top: element.style.top,
-          offsetX: (offsetX * 10) / document.body.clientWidth,
-          offsetY: (offsetY * 10) / document.body.clientWidth
+          offsetX: (offsetX * 10) / this.clientWidth,
+          offsetY: (offsetY * 10) / this.clientWidth
         };
         this.onDrag = true;
       }
